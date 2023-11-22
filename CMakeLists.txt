@@ -29,14 +29,6 @@ set(BUILD_TZ_LIB ON CACHE BOOL "Build the tz library" FORCE)
 add_subdirectory(libcron/externals/date)
 
 add_library(${PROJECT_NAME}
-    libcron/include/libcron/Cron.h
-    libcron/include/libcron/CronClock.h
-    libcron/include/libcron/CronData.h
-    libcron/include/libcron/CronRandomization.h
-    libcron/include/libcron/CronSchedule.h
-    libcron/include/libcron/DateTime.h
-    libcron/include/libcron/Task.h
-    libcron/include/libcron/TimeTypes.h
     libcron/src/CronClock.cpp
     libcron/src/CronData.cpp
     libcron/src/CronRandomization.cpp
@@ -44,30 +36,43 @@ add_library(${PROJECT_NAME}
     libcron/src/Task.cpp
 )
 
+add_library(cron::libcron ALIAS ${PROJECT_NAME})
+
 target_include_directories(${PROJECT_NAME} PUBLIC
-    libcron/include
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/libcron/include>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    date::date
-    date::tz
+    date-tz
 )
+
+target_link_libraries(${PROJECT_NAME} INTERFACE date)
 
 if(NOT MSVC)
     # Assume a modern compiler (gcc 9.3)
     target_compile_definitions(${PROJECT_NAME} PRIVATE -DHAS_UNCAUGHT_EXCEPTIONS)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/out/${CMAKE_BUILD_TYPE}")
-
 if(LIBCRON_BUILD_TESTS)
     add_subdirectory(test)
     add_dependencies(cron_test libcron)
 endif()
 
-install(TARGETS libcron DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(DIRECTORY libcron/include/libcron DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY libcron/externals/date/include/date DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# Install
+set(project_config_in "${CMAKE_CURRENT_LIST_DIR}/cmake/libcronConfig.cmake.in")
+set(project_config_out "${CMAKE_CURRENT_BINARY_DIR}/libcronConfig.cmake")
+set(config_targets_file "libcronConfigTargets.cmake")
+set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/libcron")
+
+# Include Files
+install(DIRECTORY libcron/include libcron/externals/date/include/date DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(
+    TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# Cmake Files
+install(EXPORT libcron DESTINATION ${export_dest_dir} NAMESPACE cron:: FILE ${config_targets_file})
