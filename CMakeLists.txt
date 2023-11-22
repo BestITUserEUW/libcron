@@ -80,3 +80,4 @@ export(TARGETS libcron NAMESPACE libcron::
 install(EXPORT libcron DESTINATION ${export_dest_dir} NAMESPACE libcron:: FILE ${config_targets_file})
 include(CMakePackageConfigHelpers)
 configure_package_config_file("${project_config_in}" "${project_config_out}" INSTALL_DESTINATION ${export_dest_dir})
+install(FILES "${project_config_out}" DESTINATION "${export_dest_dir}")
