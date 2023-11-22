@@ -36,7 +36,7 @@ add_library(${PROJECT_NAME}
     libcron/src/Task.cpp
 )
 
-add_library(cron::libcron ALIAS ${PROJECT_NAME})
+add_library(libcron::libcron ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/libcron/include>"
@@ -66,7 +66,7 @@ set(config_targets_file "libcronConfigTargets.cmake")
 set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/libcron")
 
 # Include Files
-install(DIRECTORY libcron/include libcron/externals/date/include/date DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(DIRECTORY libcron/include DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(
     TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}
@@ -75,4 +75,8 @@ install(
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Cmake Files
-install(EXPORT libcron DESTINATION ${export_dest_dir} NAMESPACE cron:: FILE ${config_targets_file})
+export(TARGETS libcron NAMESPACE libcron::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${config_targets_file}")
+install(EXPORT libcron DESTINATION ${export_dest_dir} NAMESPACE libcron:: FILE ${config_targets_file})
+include(CMakePackageConfigHelpers)
+configure_package_config_file("${project_config_in}" "${project_config_out}" INSTALL_DESTINATION ${export_dest_dir})
