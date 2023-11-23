@@ -1,6 +1,9 @@
 #pragma once
 
 #include <chrono>
+#include <string_view>
+#include <mutex>
+#include <date/tz.h>
 
 namespace libcron
 {
@@ -38,5 +41,21 @@ namespace libcron
             }
 
 			std::chrono::seconds utc_offset(std::chrono::system_clock::time_point now) const override;
+    };
+
+    class TzClock : public ICronClock
+    {
+        public:
+            std::chrono::system_clock::time_point now() const override
+            {
+                auto now = std::chrono::system_clock::now();
+                return now + utc_offset(now);
+            }
+
+            bool setTimezone(std::string_view name);
+            std::chrono::seconds utc_offset(std::chrono::system_clock::time_point now) const override;
+        private:
+            mutable std::mutex _mtx{};
+            const date::time_zone* _timezone{nullptr};
     };
 }
