@@ -1,6 +1,6 @@
 #include <catch.hpp>
-#include <libcron/include/libcron/Cron.h>
-#include <libcron/externals/date/include/date/date.h>
+#include <libcron/Cron.h>
+#include <date/date.h>
 #include <thread>
 #include <iostream>
 

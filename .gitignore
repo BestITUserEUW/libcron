@@ -33,5 +33,5 @@
 
 cmake-build-*
 .idea/workspace.xml
-out/*
-test/out*
+build/*
+*/out*
