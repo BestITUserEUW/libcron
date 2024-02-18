@@ -41,7 +41,7 @@ set(config_targets_file "libcronConfigTargets.cmake")
 set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/libcron")
 
 # Include Files
-install(DIRECTORY libcron/include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+install(DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 install(
     TARGETS ${PROJECT_NAME}
     EXPORT ${PROJECT_NAME}
