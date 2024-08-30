@@ -5,6 +5,7 @@ project(libcron)
 # Deactivate Iterator-Debugging on Windows
 option(LIBCRON_DEACTIVATE_ITERATOR_DEBUGGING "Build with iterator-debugging (MSVC only)." OFF)
 option(LIBCRON_BUILD_TESTS "Build Cron Tests" OFF)
+option(LIBCRON_USE_SYSTEM_TZ_DB "Use Systems Timezone Database" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Release build type" FORCE)
@@ -26,6 +27,7 @@ else()
 endif()
 
 set(BUILD_TZ_LIB ON CACHE BOOL "Build the tz library" FORCE)
+set(USE_SYSTEM_TZ_DB ON CACHE BOOL "Use Systems Timezone Database" FORCE)
 add_subdirectory(libcron/externals/date)
 
 add_library(${PROJECT_NAME}
