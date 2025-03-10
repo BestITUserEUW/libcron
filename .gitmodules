@@ -3,4 +3,4 @@
 	url = https://github.com/catchorg/Catch2.git
 [submodule "libcron/externals/date"]
 	path = libcron/externals/date
-	url = https://github.com/BestITUserEUW/date.git
+	url = https://github.com/HowardHinnant/date.git
